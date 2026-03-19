@@ -18,34 +18,115 @@ app.get('/', (req, res) => {
   res.send('Server running');
 });
 
-// Code analysis route using Mock Response
-app.post("/analyze", async (req, res) => {
+// Code analysis route using Gemini AI
+app.post('/analyze', async (req, res) => {
+  console.log("==> Incoming Request Body:", req.body);
+  const { code, language } = req.body;
+
+  if (!code) {
+    console.error("==> Error: Missing code field in request");
+    return res.status(400).json({ error: 'Code is required for analysis.' });
+  }
+
   try {
-    const { code, language } = req.body;
+    const model = genAI.getGenerativeModel({ 
+      model: "gemini-2.5-flash",
+      generationConfig: {
+        responseMimeType: "application/json",
+      }
+    });
 
-    if (!code) {
-      return res.status(400).json({ error: "Code is required" });
+    const basePrompt = `You are a highly experienced software engineer and performance optimization expert.
+
+Analyze the following code deeply written in ${language || 'an unspecified language'}.
+
+Your tasks:
+
+1. Provide a REFINED version:
+   - Clean formatting
+   - Better readability
+
+2. Provide an OPTIMIZED version:
+   - Improve logic
+   - Reduce time complexity if possible
+   - Use better algorithms or data structures
+   - Remove unnecessary loops or operations
+
+3. Explain:
+   - What was inefficient
+   - What you improved
+   - Why the new version is better
+
+4. Provide TIME COMPLEXITY:
+   - Original complexity
+   - Optimized complexity
+
+5. Detect BUGS:
+   - Logical issues
+   - Edge cases
+
+-----------------------------------
+IMPORTANT RULES:
+
+- DO NOT return same code as optimized
+- MUST change logic if inefficiency exists
+- MUST explain WHY optimization was done
+- MUST compare before vs after
+- If optimization is not significant, YOU MUST suggest a fundamentally better algorithm or approach in your optimized code and explain it.
+-----------------------------------
+
+RESPONSE FORMAT (STRICT JSON):
+{
+  "refined": "[Only the refined code here, no markdown wrappers]",
+  "optimized": "[Only the optimized code here, no markdown wrappers]",
+  "explanation": "[Explanation of improvements]",
+  "complexity": "Original: O(...), Optimized: O(...)",
+  "bugs": "[List of detected issues]"
+}
+
+CODE:
+${code}`;
+
+    let jsonParsed;
+    let attempts = 0;
+    let currentPrompt = basePrompt;
+
+    while (attempts < 2) {
+      attempts++;
+      console.log(`==> Calling Gemini (Attempt ${attempts} / 2)...`);
+      const result = await model.generateContent(currentPrompt);
+      let responseText = result.response.text();
+      
+      // Clean up markdown formatting if the model hallucinates it
+      responseText = responseText.replace(/```json/gi, '').replace(/```/g, '').trim();
+
+      try {
+        jsonParsed = JSON.parse(responseText);
+      } catch (parseError) {
+        console.error("==> JSON Parse Error processing AI response:", parseError);
+        console.error("==> Raw response was:", responseText);
+        // Fallback to ensuring it doesn't crash if it fails to parse after cleanup
+        throw new Error("Failed to parse AI response as JSON");
+      }
+
+      const cleanOptimized = (jsonParsed.optimized || "").trim();
+      const cleanInput = code.trim();
+
+      // If it returned the identical code, force a retry with an aggressive hint
+      if (cleanOptimized === cleanInput && attempts === 1) {
+        console.log("==> AI returned the exact same code as optimized. Retrying...");
+        currentPrompt = basePrompt + "\n\nCRITICAL FEEDBACK: In your previous attempt, you returned the exact same code! You MUST find a way to optimize the logic, reduce operations, or use a better data structure. If it is mathematically impossible to optimize further, explicitly explain why in the explanation.";
+        continue;
+      }
+      
+      break;
     }
-
-    console.log("Request received:", req.body);
-    console.log("Processing code...");
-
-    // MOCK RESPONSE (or AI)
-    const response = {
-      refined: "// improved code\n" + code,
-      explanation: "Code improved for readability",
-      optimized: "// optimized code\n" + code,
-      complexity: "O(n)",
-      bugs: "No major bugs"
-    };
-
-    console.log("Sending response:", response);
-
-    res.json(response);
-
+    
+    console.log("==> Successfully generated AI Response. Sending it to frontend...");
+    res.json(jsonParsed);
   } catch (error) {
-    console.error("ERROR:", error);
-    res.status(500).json({ error: "Server error" });
+    console.error('==> Error during AI code analysis:', error);
+    res.status(500).json({ error: 'Failed to process code analysis. Please check server logs or API key.' });
   }
 });
 
