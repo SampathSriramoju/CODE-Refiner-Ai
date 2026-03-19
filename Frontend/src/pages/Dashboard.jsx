@@ -114,7 +114,7 @@ export default function Dashboard() {
     setOut({ refined: "", explanation: "", optimized: "", complexity: "", bugs: "" });
 
     try {
-      const response = await fetch("https://code-refiner-ai.onrender.com/analyze", {
+      const response = await fetch("http://localhost:5000/analyze", {
         method: "POST",
         headers: {
           "Content-Type": "application/json"
@@ -158,7 +158,13 @@ export default function Dashboard() {
       addHistoryItem(item);
     } catch (err) {
       console.error("API Error:", err);
-      setErrorMsg(err.message || "Failed to analyze code. Make sure the server is running.");
+      let errorMessage = err.message || "Failed to analyze code. Make sure the server is running.";
+      
+      if (err.message.includes('quota exceeded') || err.message.includes('rate limit')) {
+        errorMessage = "API quota exceeded. Please try again in a few minutes.";
+      }
+      
+      setErrorMsg(errorMessage);
       setOut({ refined: "", explanation: "", optimized: "", complexity: "", bugs: "" });
     } finally {
       setLoading(false);

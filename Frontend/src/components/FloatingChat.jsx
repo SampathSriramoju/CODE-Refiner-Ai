@@ -144,11 +144,17 @@ export default function FloatingChat() {
         timestamp: Date.now(),
       };
       setMessages((prev) => [...prev, botMsg]);
-    } catch {
+    } catch (error) {
+      let errorMessage = "Sorry, something went wrong. Please try again.";
+      
+      if (error.message.includes('quota exceeded') || error.message.includes('rate limit')) {
+        errorMessage = "API quota exceeded. Please try again in a few minutes.";
+      }
+      
       const errorMsg = {
         id: (Date.now() + 1).toString(),
         role: "assistant",
-        text: "Sorry, something went wrong. Please try again.",
+        text: errorMessage,
         timestamp: Date.now(),
       };
       setMessages((prev) => [...prev, errorMsg]);

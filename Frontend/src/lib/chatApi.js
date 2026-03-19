@@ -9,7 +9,7 @@
 
 export async function getAIResponse(message, conversationHistory = []) {
   try {
-    const response = await fetch("https://code-refiner-ai.onrender.com/chat", {
+    const response = await fetch("http://localhost:5000/chat", {
       method: "POST",
       headers: {
         "Content-Type": "application/json"
@@ -21,7 +21,13 @@ export async function getAIResponse(message, conversationHistory = []) {
     });
 
     if (!response.ok) {
-      throw new Error(`Server responded with status: ${response.status}`);
+      const errorData = await response.json().catch(() => ({}));
+      
+      if (response.status === 429) {
+        throw new Error(errorData.error || 'API quota exceeded. Please try again in a few minutes.');
+      }
+      
+      throw new Error(errorData.error || `Server responded with status: ${response.status}`);
     }
 
     const data = await response.json();
