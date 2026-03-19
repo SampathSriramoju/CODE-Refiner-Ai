@@ -126,7 +126,7 @@ ${code}`;
     res.json(jsonParsed);
   } catch (error) {
     console.error('==> Error during AI code analysis:', error);
-    res.status(500).json({ error: 'Failed to process code analysis. Please check server logs or API key.' });
+    res.status(500).json({ error: `Backend API Error: ${error.message}` });
   }
 });
 
@@ -159,7 +159,7 @@ app.post('/chat', async (req, res) => {
     res.json({ response: responseText });
   } catch (error) {
     console.error('Error during AI chat:', error);
-    res.status(500).json({ error: 'Failed to generate chat response.' });
+    res.status(500).json({ error: `Backend Chat Error: ${error.message}` });
   }
 });
 
