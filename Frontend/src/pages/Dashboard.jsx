@@ -126,7 +126,12 @@ export default function Dashboard() {
       });
 
       if (!response.ok) {
-        throw new Error("Server responded with status: " + response.status);
+        let backendMessage = "Server responded with status: " + response.status;
+        try {
+          const errData = await response.json();
+          if (errData.error) backendMessage = errData.error;
+        } catch (_) {}
+        throw new Error(backendMessage);
       }
 
       const result = await response.json();
@@ -153,7 +158,7 @@ export default function Dashboard() {
       addHistoryItem(item);
     } catch (err) {
       console.error("API Error:", err);
-      setErrorMsg("Failed to analyze code. Make sure the server is running.");
+      setErrorMsg(err.message || "Failed to analyze code. Make sure the server is running.");
       setOut({ refined: "", explanation: "", optimized: "", complexity: "", bugs: "" });
     } finally {
       setLoading(false);
