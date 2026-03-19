@@ -1,0 +1,287 @@
+@import "tailwindcss";
+
+/* ──────────────────────────────────────────
+   Design Tokens — Dark Mode (default)
+   ────────────────────────────────────────── */
+
+:root,
+.dark {
+  --bg: #09090b;
+  --bg-overlay: rgba(9, 9, 11, 0.88);
+  --surface: rgba(255, 255, 255, 0.04);
+  --surface-strong: rgba(255, 255, 255, 0.07);
+  --border: rgba(255, 255, 255, 0.08);
+  --border-hover: rgba(255, 255, 255, 0.14);
+  --text: rgba(255, 255, 255, 0.93);
+  --text-secondary: rgba(161, 161, 170, 0.9);
+  --muted: rgba(161, 161, 170, 0.8);
+  --primary: 129 140 248;
+  --accent: 168 85 247;
+  --shadow: 0, 0, 0;
+  color-scheme: dark;
+}
+
+/* ──────────────────────────────────────────
+   Design Tokens — Light Mode
+   ────────────────────────────────────────── */
+
+.light {
+  --bg: #fafafa;
+  --bg-overlay: rgba(250, 250, 250, 0.9);
+  --surface: rgba(0, 0, 0, 0.03);
+  --surface-strong: rgba(0, 0, 0, 0.05);
+  --border: rgba(0, 0, 0, 0.08);
+  --border-hover: rgba(0, 0, 0, 0.14);
+  --text: rgba(9, 9, 11, 0.93);
+  --text-secondary: rgba(113, 113, 122, 0.9);
+  --muted: rgba(113, 113, 122, 0.7);
+  --primary: 99 102 241;
+  --accent: 139 92 246;
+  --shadow: 0, 0, 0;
+  color-scheme: light;
+}
+
+html,
+body {
+  height: 100%;
+  margin: 0;
+  font-family: "Inter", ui-sans-serif, system-ui, -apple-system, "Segoe UI",
+    Roboto, Helvetica, Arial, sans-serif;
+  background: var(--bg);
+  color: var(--text);
+  -webkit-font-smoothing: antialiased;
+  -moz-osx-font-smoothing: grayscale;
+}
+
+body {
+  background-attachment: fixed;
+}
+
+/* ──────────────────────────────────────────
+   Light mode overrides for Tailwind classes
+   ────────────────────────────────────────── */
+
+.light {
+  background-color: #fafafa;
+  color: #18181b;
+}
+
+.light .bg-zinc-950 { background-color: #fafafa !important; }
+.light .bg-zinc-900 { background-color: #ffffff !important; }
+.light .text-zinc-100 { color: #18181b !important; }
+.light .text-zinc-200 { color: #27272a !important; }
+.light .text-zinc-300 { color: #3f3f46 !important; }
+.light .text-zinc-400 { color: #71717a !important; }
+.light .text-zinc-500 { color: #a1a1aa !important; }
+.light .text-zinc-600 { color: #52525b !important; }
+.light .text-white { color: #18181b !important; }
+.light .border-white\/\[0\.06\] { border-color: rgba(0,0,0,0.08) !important; }
+.light .border-white\/\[0\.08\] { border-color: rgba(0,0,0,0.1) !important; }
+.light .bg-white\/\[0\.02\] { background-color: rgba(255,255,255,0.8) !important; }
+.light .bg-white\/\[0\.03\] { background-color: rgba(255,255,255,0.9) !important; }
+.light .bg-white\/\[0\.04\] { background-color: rgba(0,0,0,0.02) !important; }
+.light .bg-white\/\[0\.06\] { background-color: rgba(0,0,0,0.03) !important; }
+.light .bg-white\/\[0\.08\] { background-color: rgba(0,0,0,0.04) !important; }
+.light .bg-white\/\[0\.1\] { background-color: rgba(0,0,0,0.06) !important; }
+.light .placeholder-zinc-600::placeholder { color: #a1a1aa !important; }
+
+/* Light mode cards get a white background with subtle border */
+.light .rounded-2xl.border { 
+  background-color: rgba(255,255,255,0.85) !important;
+  border-color: rgba(0,0,0,0.06) !important;
+  box-shadow: 0 1px 3px rgba(0,0,0,0.04), 0 1px 2px rgba(0,0,0,0.02);
+}
+
+/* Light mode code panels */
+.light .bg-zinc-950\/50,
+.light .bg-zinc-950\/60 {
+  background-color: #f4f4f5 !important;
+}
+
+/* Light primary button text stays white on colored bg */
+.light .bg-\[rgb\(var\(--primary\)\)\] { color: #fff !important; }
+
+/* ──────────────────────────────────────────
+   Animations — restrained & premium
+   ────────────────────────────────────────── */
+
+@keyframes cr-fade-up {
+  from {
+    opacity: 0;
+    transform: translateY(12px);
+  }
+  to {
+    opacity: 1;
+    transform: translateY(0);
+  }
+}
+
+@keyframes cr-gradient-move {
+  0% { background-position: 0% 50%; }
+  50% { background-position: 100% 50%; }
+  100% { background-position: 0% 50%; }
+}
+
+@keyframes cr-shimmer {
+  0% { transform: translateX(-100%); }
+  100% { transform: translateX(100%); }
+}
+
+@keyframes cr-ripple {
+  from {
+    width: 0;
+    height: 0;
+    opacity: 0.7;
+  }
+  to {
+    width: 400px;
+    height: 400px;
+    opacity: 0;
+  }
+}
+
+/* ──────────────────────────────────────────
+   Utility Classes
+   ────────────────────────────────────────── */
+
+.cr-animated-gradient {
+  background-size: 200% 200%;
+  animation: cr-gradient-move 20s ease-in-out infinite;
+}
+
+.animate-shimmer {
+  animation: cr-shimmer 2s ease-in-out infinite;
+}
+
+.cr-fade-up {
+  animation: cr-fade-up 500ms ease-out both;
+}
+
+.cr-ripple {
+  position: absolute;
+  border-radius: 9999px;
+  transform: translate(-50%, -50%);
+  pointer-events: none;
+  background: radial-gradient(circle, rgba(255, 255, 255, 0.4), transparent 60%);
+  animation: cr-ripple 600ms ease-out forwards;
+}
+
+.cr-cursor-glow {
+  --x: 50%;
+  --y: 50%;
+  background: radial-gradient(
+    600px circle at var(--x) var(--y),
+    rgba(var(--primary), 0.06),
+    transparent 40%
+  );
+}
+
+.light .cr-cursor-glow {
+  background: radial-gradient(
+    600px circle at var(--x) var(--y),
+    rgba(var(--primary), 0.03),
+    transparent 40%
+  );
+}
+
+/* ──────────────────────────────────────────
+   Glassmorphism — refined
+   ────────────────────────────────────────── */
+
+.glass-morphism {
+  background: var(--surface);
+  backdrop-filter: blur(16px);
+  -webkit-backdrop-filter: blur(16px);
+  border: 1px solid var(--border);
+}
+
+.glass-morphism-strong {
+  background: var(--surface-strong);
+  backdrop-filter: blur(20px);
+  -webkit-backdrop-filter: blur(20px);
+  border: 1px solid var(--border-hover);
+}
+
+/* ──────────────────────────────────────────
+   Scrollbar
+   ────────────────────────────────────────── */
+
+.cr-scrollbar {
+  scrollbar-width: thin;
+  scrollbar-color: rgba(113, 113, 122, 0.3) transparent;
+}
+
+.cr-scrollbar::-webkit-scrollbar {
+  width: 6px;
+  height: 6px;
+}
+
+.cr-scrollbar::-webkit-scrollbar-thumb {
+  background: rgba(113, 113, 122, 0.3);
+  border-radius: 999px;
+}
+
+.cr-scrollbar::-webkit-scrollbar-track {
+  background: transparent;
+}
+
+/* ──────────────────────────────────────────
+   Text effects
+   ────────────────────────────────────────── */
+
+.text-gradient-primary {
+  background: linear-gradient(
+    135deg,
+    rgb(var(--primary)) 0%,
+    rgb(var(--accent)) 50%,
+    rgba(255, 255, 255, 0.9) 100%
+  );
+  background-size: 200% 200%;
+  -webkit-background-clip: text;
+  background-clip: text;
+  -webkit-text-fill-color: transparent;
+  animation: cr-gradient-move 6s ease infinite;
+}
+
+.light .text-gradient-primary {
+  background: linear-gradient(
+    135deg,
+    rgb(var(--primary)) 0%,
+    rgb(var(--accent)) 50%,
+    rgb(var(--primary)) 100%
+  );
+  background-size: 200% 200%;
+  -webkit-background-clip: text;
+  background-clip: text;
+  -webkit-text-fill-color: transparent;
+  animation: cr-gradient-move 6s ease infinite;
+}
+
+/* ──────────────────────────────────────────
+   Utility
+   ────────────────────────────────────────── */
+
+.line-clamp-2 {
+  display: -webkit-box;
+  -webkit-line-clamp: 2;
+  -webkit-box-orient: vertical;
+  overflow: hidden;
+}
+
+html {
+  scroll-behavior: smooth;
+}
+
+::selection {
+  background: rgba(var(--primary), 0.25);
+  color: white;
+}
+
+.light ::selection {
+  color: #18181b;
+}
+
+.focus-ring:focus {
+  outline: none;
+  box-shadow: 0 0 0 2px rgba(var(--primary), 0.4);
+}
