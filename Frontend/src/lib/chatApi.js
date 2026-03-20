@@ -9,7 +9,7 @@
 
 export async function getAIResponse(message, conversationHistory = []) {
   try {
-    const response = await fetch("https://code-refiner-ai.onrender.com/chat", {
+    const response = await fetch("http://localhost:5000/chat", {
       method: "POST",
       headers: {
         "Content-Type": "application/json"

@@ -114,7 +114,7 @@ export default function Dashboard() {
     setOut({ refined: "", explanation: "", optimized: "", complexity: "", bugs: "" });
 
     try {
-      const response = await fetch("https://code-refiner-ai.onrender.com/analyze", {
+      const response = await fetch("http://localhost:5000/analyze", {
         method: "POST",
         headers: {
           "Content-Type": "application/json"

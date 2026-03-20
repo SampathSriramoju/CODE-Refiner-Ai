@@ -114,8 +114,6 @@ async function callWithFallback(prompt, options = {}) {
       
       lastError = error;
       
-      // If this is an API key error, don't necessarily give up if we have backups, 
-      // but if it's the only key or all fail, the loop will handle it.
       if ((error.status === 429 || error.isApiKeyError) && i < models.length - 1) {
         continue;
       }
@@ -136,7 +134,7 @@ async function processQueue() {
       const result = await fn();
       resolve(result);
     } catch (error) {
-      const shouldRetry = await handleRateLimitError(error, 45000); // 45 seconds
+      const shouldRetry = await handleRateLimitError(error, 45000);
       if (shouldRetry) {
         requestQueue.unshift({ resolve, reject, fn });
       } else {
@@ -255,7 +253,6 @@ ${code}`;
         } catch (parseError) {
           console.error("==> JSON Parse Error processing AI response:", parseError);
           console.error("==> Raw response was:", responseText);
-          // Fallback to ensuring it doesn't crash if it fails to parse after cleanup
           throw new Error("Failed to parse AI response as JSON");
         }
 

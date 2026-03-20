@@ -3,18 +3,18 @@ const API_CONFIG = {
   // Primary API configuration
   primary: {
     apiKey: process.env.GEMINI_API_KEY,
-    model: "gemini-1.5-flash"
+    model: "gemini-2.0-flash"
   },
   
   // Backup API configurations (optional)
   backups: [
     {
       apiKey: process.env.GEMINI_API_KEY_BACKUP_1,
-      model: "gemini-1.5-flash"
+      model: "gemini-2.0-flash"
     },
     {
       apiKey: process.env.GEMINI_API_KEY_BACKUP_2, 
-      model: "gemini-1.5-flash"
+      model: "gemini-2.0-flash"
     }
   ].filter(config => config.apiKey), // Filter out undefined keys
   
